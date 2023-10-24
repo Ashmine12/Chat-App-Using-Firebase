@@ -1,4 +1,5 @@
 import 'package:chat_application/model/user_model.dart';
+import 'package:chat_application/screen/chat_screen.dart';
 import 'package:chat_application/screen/login_screen.dart';
 import 'package:chat_application/services/firebase_service.dart';
 import 'package:chat_application/services/share_helper.dart';
@@ -43,19 +44,26 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () async{
-                FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false);
-                await SharedPrefHelper().clearSharedPreferences();
-
-              },
-              icon: Icon(Icons.logout))
+            onPressed: () async {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false);
+              await SharedPrefHelper().clearSharedPreferences();
+            },
+            icon: Icon(
+              color: Colors.red,
+              Icons.logout,
+            ),
+          )
         ],
         backgroundColor: Colors.black,
-        title:
-            Text('Chet-Chat', style: GoogleFonts.aboreto(color: Colors.white)),
+        title: Text(
+          'Chet-Chat',
+          style: GoogleFonts.akronim(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: users.length,
@@ -66,6 +74,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ChatCard(
                 name: user.name ?? '',
                 imgUrl: user.image ?? '',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ChatScreen(
+                        receiverUserId: user.uid ?? "",
+                        senderUserId: FirebaseAuth.instance.currentUser!.uid,
+                        imgUrl: user.image ?? '',
+                        name: user.name ?? '',
+                      ),
+                    ),
+                  );
+                },
               ),
               Gap(
                 height: 20,

@@ -42,6 +42,7 @@ dependencies:
   cloud_firestore: ^4.9.3
   image_picker: ^1.0.4
   shared_preferences: ^2.2.2
+  intl:
 
 
 dev_dependencies:

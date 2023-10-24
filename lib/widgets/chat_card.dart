@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatCard extends StatelessWidget {
-  const ChatCard({super.key, required this.name, required this.imgUrl});
-final String imgUrl;
-final String name;
+  const ChatCard({
+    super.key,
+    required this.name,
+    required this.imgUrl,
+    required this.onPressed,
+  });
+  final String imgUrl;
+  final String name;
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 65,
       child: ElevatedButton(
-        onPressed: () {
-          // Handle user item click
-        },
+        onPressed: onPressed,
         child: Row(
           children: [
             CircleAvatar(
@@ -23,7 +27,7 @@ final String name;
             Gap(),
             Text(
               name,
-              style: GoogleFonts.openSans(
+              style: GoogleFonts.sourceCodePro(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
