@@ -65,34 +65,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          var user = users[index];
-          return Column(
-            children: [
-              ChatCard(
-                name: user.name ?? '',
-                imgUrl: user.image ?? '',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ChatScreen(
-                        receiverUserId: user.uid ?? "",
-                        senderUserId: FirebaseAuth.instance.currentUser!.uid,
-                        imgUrl: user.image ?? '',
-                        name: user.name ?? '',
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Gap(
-                height: 20,
-              )
-            ],
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            _fetchUserData();
+          });
         },
+        child: ListView.builder(
+          itemCount: users.length,
+          itemBuilder: (context, index) {
+            var user = users[index];
+            return Column(
+              children: [
+                ChatCard(
+                  name: user.name ?? '',
+                  imgUrl: user.image ?? '',
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ChatScreen(
+                          receiverUserId: user.uid ?? "",
+                          senderUserId: FirebaseAuth.instance.currentUser!.uid,
+                          imgUrl: user.image ?? '',
+                          name: user.name ?? '',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                Gap(
+                  height: 20,
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }
