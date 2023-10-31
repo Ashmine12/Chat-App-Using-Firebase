@@ -87,7 +87,7 @@ class ChatScreenBody extends StatelessWidget {
                 for (var message in messages) {
                   String text = message['text'];
                   bool isMe = message['senderUid'] == senderUserId;
-                  Timestamp timestamp = message['timestamp'];
+                  Timestamp timestamp = message['timestamp'] ?? Timestamp.now();
                   messageWidgets
                       .add(ChatMessage(text, isMe, senderUserId, timestamp));
                 }
@@ -110,14 +110,28 @@ class ChatMessage extends StatelessWidget {
   final String text;
   final bool isMe;
   final String currentUserUid;
-  final Timestamp timestamp; // Add timestamp field
+  final Timestamp timestamp;
 
   ChatMessage(this.text, this.isMe, this.currentUserUid, this.timestamp);
+
+  String formatTimestamp(Timestamp timestamp) {
+    final DateTime now = DateTime.now();
+    final DateTime messageTime = timestamp.toDate();
+    final Duration difference = now.difference(messageTime);
+
+    if (difference.inDays == 0) {
+      return 'Today at ${DateFormat('hh:mm a').format(messageTime)}';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday at ${DateFormat('hh:mm a').format(messageTime)}';
+    } else {
+      return DateFormat('MMMM dd').format(messageTime);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     Alignment alignment = isMe ? Alignment.centerRight : Alignment.centerLeft;
-    DateTime messageTime = timestamp.toDate();
+    final String timeAgo = formatTimestamp(timestamp);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
@@ -127,8 +141,7 @@ class ChatMessage extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(bottom: 5.0),
             child: Text(
-              DateFormat('hh:mm a')
-                  .format(messageTime), // Format time as per your requirement
+              timeAgo, // Display the formatted time
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
@@ -155,6 +168,7 @@ class ChatMessage extends StatelessWidget {
     );
   }
 }
+
 
 class ChatInput extends StatefulWidget {
   final String senderUserId;
